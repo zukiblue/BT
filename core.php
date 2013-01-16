@@ -1,4 +1,7 @@
 <?php
+// avoid direct call
+if(!strcasecmp(basename($_SERVER['SCRIPT_NAME']), basename(__FILE__))) die('Access Denied.');
+
 
 if ( file_exists( 'offline.php' ) && !isset( $_GET['admin'] ) ) {
 	include( 'offline.php' );
@@ -10,34 +13,32 @@ $g_request_time = microtime(true);
 // Output off
 ob_start();
 
-/**
- * Load constants
- */
+// Load constants
 require_once( dirname( __FILE__ ).DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'constant_inc.php' );
 
 $config_inc_found = false;
-/**
- * Include default configuration settings
- */
+
+// Include default configuration settings
 require_once( dirname( __FILE__ ).DIRECTORY_SEPARATOR.'default'.DIRECTORY_SEPARATOR.'config_defaults_inc.php' );
 
-# config_inc may not be present if this is a new install
-if ( file_exists( dirname( __FILE__ ).DIRECTORY_SEPARATOR.'config_inc.php' ) ) {
-	require_once( dirname( __FILE__ ).DIRECTORY_SEPARATOR.'config_inc.php' );
+// config.inc may not be present if this is a new install
+if ( file_exists( dirname( __FILE__ ).DIRECTORY_SEPARATOR.'config.inc.php' ) ) {
+	require_once( dirname( __FILE__ ).DIRECTORY_SEPARATOR.'config.inc.php' );
 	$config_inc_found = true;
 }
 
-
-/*
- * Set include paths
- */
+// Set include paths
 #define ( 'BASE_PATH' , realpath( dirname(__FILE__) ) );
 #$library = BASE_PATH . DIRECTORY_SEPARATOR . 'library';
 $core_path = dirname(__FILE__).DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR;
 $include_path = dirname(__FILE__).DIRECTORY_SEPARATOR.'core'.DIRECTORY_SEPARATOR.'include';
+$include_path2 = dirname(__FILE__).DIRECTORY_SEPARATOR.'include';
+$classes_path = dirname(__FILE__).DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR;
 
 $path = array($core_path,
               $include_path,
+              $include_path2,
+              $classes_path,
               get_include_path()
              );
 set_include_path( implode( PATH_SEPARATOR, $path ) );
@@ -81,9 +82,9 @@ if ( false === $config_inc_found ) {
 		exit; # additional output can cause problems so let's just stop output here
 	}
 }
-
-# Load rest of core in separate directory.
-
+        
+# Load rest of core.  
+   
 #require_once( 'config_api.php' );
 #require_once( 'logging_api.php' );
 
@@ -96,8 +97,30 @@ require_once( 'lang_api.php' );
 
 # DATABASE WILL BE OPENED HERE!!  THE DATABASE SHOULDN'T BE EXPLICITLY
 # OPENED ANYWHERE ELSE.
-#require_once( 'database_api.php' );
+require_once( 'core.class.php' );
+require_once( 'mysql.php' );
+require_once( 'session.class.php' );
 
+#require_once( 'database_api.php' );
+    #Connect to the DB && get configuration from database
+    $ferror=null;
+    if (!db_connect($dbhost, $dbusername, $dbpassword) || !db_select_database($dbname)) {
+        $ferror='Unable to connect to the database';
+    } elseif(!($core=core::init()) || !($cfg = $core->getConfig())) {
+        $ferror='Unable to load config info from DB. Get tech support.';
+    }
+    // Verify errors
+    if($ferror) { //Fatal error
+        //try alerting admin using email in config file
+        $msg=$ferror."\n\n";//.THISPAGE;
+        //  Mailer::sendmail(ADMIN_EMAIL, 'osTicket Fatal Error', $msg, sprintf('"osTicket Alerts"<%s>', ADMIN_EMAIL));
+        //Display generic error to the user
+        die("<b>Fatal Error:</b> Contact system administrator.<br />".$msg );
+        exit;
+    }
+    
+    //Init
+    $session = $core->getSession();
 # PHP Sessions
 #require_once( 'session_api.php' );
 
@@ -106,7 +129,7 @@ require_once( 'lang_api.php' );
 #require_once( 'events_inc.php' );
 
 # Authentication and user setup
-#require_once( 'authentication_api.php' );
+require_once( 'authentication_api.php' );
 #require_once( 'project_api.php' );
 #require_once( 'project_hierarchy_api.php' );
 #require_once( 'user_api.php' );
@@ -134,6 +157,5 @@ if ( !isset( $g_skip_lang_load ) ) {
 
 # signal plugins that the core system is loaded
 #event_signal( 'EVENT_CORE_READY' );
-
 
 ?>

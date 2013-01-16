@@ -1,7 +1,7 @@
 <?php
-	$hostname = '192.168.1.222';
+	$dbhost = '192.168.1.222';
 	#$dbtype = 'mysql';
-	$dbname = 'mantis';
+	$dbname = 'bt';
 	$dbusername = 'bt';
 	$dbpassword = 'bt';
 ?>

@@ -5,7 +5,7 @@
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="pragma" content="no-cache" />
     <title>
-        <?php echo ($ost && ($title=$ost->getPageTitle()))?$title:'osTicket :: Staff Control Panel'; ?></title>
+        <?php echo ($core && ($title=$core->getPageTitle()))?$title:'Control Panel'; ?></title>
     <!--[if IE]>
     <style type="text/css">
         .tip_shadow { display:block !important; }
@@ -25,24 +25,16 @@
     <link type="text/css" rel="stylesheet" href="./css/dropdown.css">
     <script type="text/javascript" src="./js/jquery.dropdown.js"></script>
     <?php
-    if($ost && ($headers=$ost->getExtraHeaders())) {
+    if($core && ($headers=$core->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
     }
     ?>
 </head>
 <body>
 <div id="container">
-    <?php
-    if($ost->getError())
-        echo sprintf('<div id="error_bar">%s</div>', $ost->getError());
-    elseif($ost->getWarning())
-        echo sprintf('<div id="warning_bar">%s</div>', $ost->getWarning());
-    elseif($ost->getNotice())
-        echo sprintf('<div id="notice_bar">%s</div>', $ost->getNotice());
-    ?>
     <div id="header">
         <a href="index.php" id="logo">osTicket - Customer Support System</a>
-        <p id="info">Howdy, <strong><?php echo $thisstaff->getUserName(); ?></strong>
+        <p id="info">Logged in as <strong><?php /*echo $thisstaff->getUserName();*/ ?></strong>
            <?php
             if($thisstaff->isAdmin() && !defined('ADMINPAGE')) { ?>
             | <a href="admin.php">Admin Panel</a>
@@ -50,9 +42,17 @@
             | <a href="index.php">Staff Panel</a>
             <?php } ?>
             | <a href="profile.php">My Preferences</a>
-            | <a href="logout.php?auth=<?php echo md5($ost->getCSRFToken().SECRET_SALT.session_id()); ?>">Log Out</a>
+            | <a href="logout.php?auth=<?php echo md5($core->getCSRFToken().SECRET_SALT.session_id()); ?>">Log Out</a>
         </p>
     </div>
+    <?php
+    if($core->getError())
+        echo sprintf('<div id="error_bar">%s</div>', $core->getError());
+    elseif($core->getWarning())
+        echo sprintf('<div id="warning_bar">%s</div>', $core->getWarning());
+    elseif($core->getNotice())
+        echo sprintf('<div id="notice_bar">%s</div>', $core->getNotice());
+    ?>
     <ul id="nav">
         <?php
         if(($tabs=$nav->getTabs()) && is_array($tabs)){

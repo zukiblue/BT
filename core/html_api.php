@@ -69,7 +69,7 @@ function html_javascript_link( $p_filename) {
  * @return null
  */
 function html_page_top( $p_page_title = null, $p_redirect_url = null ) {
-	html_begin();
+    html_begin();
 	html_head_begin();
 	html_css();
 	html_content_type();

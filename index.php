@@ -7,7 +7,13 @@
 
 require_once 'core.php';
 
-echo "The Index";
+if ( auth_is_user_authenticated() ) {
+	//print_header_redirect( config_get( 'default_home_page' ) );
+    header( 'Content-Type: text/html; charset=utf-8' );
+    header( "Refresh: 0;url=main.php" );
+} else {
+    //        print_header_redirect( 'login_page.php' );
+}
 
 #require_once( 'core.php' );
 
@@ -30,4 +36,12 @@ if ( OFF != $t_rss_enabled && news_is_enabled() ) {
         html_set_rss_link( $t_rss_link );
 }
 */
-html_page_top( lang_get( 'main_link' ) );
+#include 'header.inc.php';
+//html_page_top( lang_get( 'main_link' ) );
+
+#echo "The Index";
+
+//echo "Session ".$session;
+//include 'footer.inc.php';
+
+//html_page_bottom();

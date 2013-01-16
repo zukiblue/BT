@@ -1,0 +1,4 @@
+<?php
+# Group commands menuitems
+$main_title = 'Move';
+?>

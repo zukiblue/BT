@@ -55,14 +55,13 @@ function lang_load( $p_lang, $p_dir = null ) {
 
 	if( is_null( $t_lang_dir ) ) {
 		$t_lang_dir = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-		require_once( $t_lang_dir . 'strings_' . $p_lang . '.txt' );
+                require_once( $t_lang_dir . 'strings_' . $p_lang . '.txt' );
 	} else {
 		if( is_file( $t_lang_dir . 'strings_' . $p_lang . '.txt' ) ) {
 			include_once( $t_lang_dir . 'strings_' . $p_lang . '.txt' );
 		}
 	}
-
-	# Allow overriding strings declared in the language file.
+        # Allow overriding strings declared in the language file.
 	# custom_strings_inc.php can use $g_active_language
 	$t_custom_strings = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'custom_strings_inc.php';
 	if( file_exists( $t_custom_strings ) ) {
@@ -72,10 +71,13 @@ function lang_load( $p_lang, $p_dir = null ) {
 	}
 
 	$t_vars = get_defined_vars();
-
+	
 	foreach( array_keys( $t_vars ) as $t_var ) {
 		$t_lang_var = preg_replace( '/^s_/', '', $t_var );
-		if( $t_lang_var != $t_var ) {
+//CHANGE - 
+                $g_lang_strings[$p_lang][$t_lang_var] = $$t_var;
+		
+                if( $t_lang_var != $t_var ) {
 			$g_lang_strings[$p_lang][$t_lang_var] = $$t_var;
 		}
 		else if( 'MANTIS_ERROR' == $t_var ) {
@@ -88,6 +90,8 @@ function lang_load( $p_lang, $p_dir = null ) {
 			}
 		}
 	}
+//die(var_dump($g_lang_strings));
+        
 }
 
 /**
@@ -101,7 +105,8 @@ function lang_get_default() {
 
 	# Confirm that the user's language can be determined
 	if( function_exists( 'auth_is_user_authenticated' ) && auth_is_user_authenticated() ) {
-		$t_lang = user_pref_get_language( auth_get_current_user_id() );
+	  //$t_lang = user_pref_get_language( auth_get_current_user_id() );
+          $t_lang = 'english';	  
 	}
 
 	# Otherwise fall back to default
@@ -269,11 +274,10 @@ function lang_get( $p_string, $p_lang = null ) {
 	if( null === $t_lang ) {
 		$t_lang = lang_get_current();
 	}
-
 	// Now we'll make sure that the requested language is loaded
 	lang_ensure_loaded( $t_lang );
 
-	if( lang_exists( $p_string, $t_lang ) ) {
+        if( lang_exists( $p_string, $t_lang ) ) {
 		return $g_lang_strings[$t_lang][$p_string];
 	} else {
 /*		$t_plugin_current = plugin_get_current();
@@ -304,8 +308,7 @@ function lang_get( $p_string, $p_lang = null ) {
  */
 function lang_exists( $p_string, $p_lang ) {
 	global $g_lang_strings;
-
-	return( isset( $g_lang_strings[$p_lang] ) && isset( $g_lang_strings[$p_lang][$p_string] ) );
+      	return( isset( $g_lang_strings[$p_lang] ) && isset( $g_lang_strings[$p_lang][$p_string] ) );
 }
 
 /**
