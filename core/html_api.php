@@ -124,11 +124,11 @@ function html_page_top( $p_page_title = null, $p_redirect_url = null ) {
  * @return null
  */
 function html_page_bottom( $p_file = null ) {
-	if( !db_is_connected() ) {
+/*	if( !db_is_connected() ) {
 		return;
 	}
 
-	event_signal( 'EVENT_LAYOUT_CONTENT_END' );
+	#event_signal( 'EVENT_LAYOUT_CONTENT_END' );
 
 	if( config_get( 'show_footer_menu' ) ) {
 		echo '<br />';
@@ -138,7 +138,7 @@ function html_page_bottom( $p_file = null ) {
         if( null === $p_file ) {
 		$p_file = basename( $_SERVER['SCRIPT_NAME'] );
 	}
-
+*/
 	html_bottom_banner();
 	html_footer();
 	html_body_end();

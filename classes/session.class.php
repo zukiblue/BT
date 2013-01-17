@@ -14,11 +14,15 @@
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
 
-class osTicketSession {
-
+class session {
+    
     var $ttl = SESSION_TTL;
 
-    function osTicketSession($ttl=0){
+    static function start($ttl=0) {
+        return New session($ttl);
+    }
+
+    function session($ttl=0){
 
         $this->ttl =$ttl?$ttl:get_cfg_var('session.gc_maxlifetime');
         if(!$this->ttl)
@@ -52,7 +56,7 @@ class osTicketSession {
     function close(){
         return (true);
     }
- 
+ /*
     function read($id){
         $data="";
         $sql='SELECT session_data FROM '.SESSION_TABLE
@@ -90,7 +94,7 @@ class osTicketSession {
         $sql='DELETE FROM '.SESSION_TABLE.' WHERE session_expire<NOW()';
         db_query($sql);
     }
-
+*/
     /* helper functions */
 
     function getTTL(){
@@ -111,9 +115,5 @@ class osTicketSession {
         return $users;
     }
 
-    /* ---------- static function ---------- */
-    function start($ttl=0) {
-        return New osTicketSession($ttl);
-    }
 }
 ?>

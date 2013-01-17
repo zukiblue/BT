@@ -55,8 +55,7 @@ $g_cache_config_project = null;
 function config_get( $p_option, $p_default = null, $p_user = null, $p_project = null ) {
 	global $g_cache_config, $g_cache_config_access, $g_cache_db_table_exists, $g_cache_filled;
 	global $g_cache_config_user, $g_cache_config_project, $g_project_override;
-                            	die('IOIO');
-
+                   
 	# @@ debug @@ echo "lu o=$p_option ";
 	# bypass table lookup for certain options
 	$t_bypass_lookup = !config_can_set_in_database( $p_option );

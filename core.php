@@ -7,7 +7,8 @@ if ( file_exists( 'offline.php' ) && !isset( $_GET['admin'] ) ) {
 	include( 'offline.php' );
 	exit;
 }
-
+//define('SESSION_TTL', 86400); // Default 24 hours
+ 
 // Stats - for page request time
 $g_request_time = microtime(true);
 // Output off
@@ -89,7 +90,8 @@ if ( false === $config_inc_found ) {
 #require_once( 'logging_api.php' );
 
 # Load internationalization functions (needed before database_api, in case database connection fails)
-require_once( 'lang_api.php' );
+#require_once( 'lang_api.php' );
+require_once( 'lang.class.php' );
 
 # error functions should be loaded to allow database to print errors
 #require_once( 'error_api.php' );
@@ -99,7 +101,7 @@ require_once( 'lang_api.php' );
 # OPENED ANYWHERE ELSE.
 require_once( 'core.class.php' );
 require_once( 'mysql.php' );
-require_once( 'session.class.php' );
+#require_once( 'session.class.php' );
 
 #require_once( 'database_api.php' );
     #Connect to the DB && get configuration from database
@@ -120,7 +122,7 @@ require_once( 'session.class.php' );
     }
     
     //Init
-    $session = $core->getSession();
+    #$session = $core->getSession();
 # PHP Sessions
 #require_once( 'session_api.php' );
 
@@ -129,11 +131,13 @@ require_once( 'session.class.php' );
 #require_once( 'events_inc.php' );
 
 # Authentication and user setup
-require_once( 'authentication_api.php' );
-#require_once( 'project_api.php' );
-#require_once( 'project_hierarchy_api.php' );
-#require_once( 'user_api.php' );
-#require_once( 'access_api.php' );
+#require_once( 'authentication_api.php' );
+require_once( 'auth.class.php' );
+if( !($auth=auth::init()) ) {
+    $ferror='Unable to load Authentication Module. Get tech support.\n\n';
+    die("<b>Fatal Error:</b> Contact system administrator.<br />".$ferror );
+    exit;
+}
 
 # Display API's
 require_once( 'http_api.php' );
@@ -153,6 +157,8 @@ if ( !isset( $g_login_anonymous ) ) {
 // push push default language to speed calls to lang_get
 if ( !isset( $g_skip_lang_load ) ) {
 #	lang_push( lang_get_default() );
+//    lang_load( lang_get_default() );
+    lang_load( 'english' );
 }
 
 # signal plugins that the core system is loaded

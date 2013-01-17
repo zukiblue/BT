@@ -28,8 +28,7 @@ class core {
     var $session;
     var $csrf;
 
-    //*** static functions ***
-    function init() {
+    static function init() {
         if(!($core = new core()))
             return null;
         //Set default time zone... user/staff settting will overwrite it (on login).
@@ -44,9 +43,10 @@ class core {
         $this->config = Config::lookup(1);
 
         //DB based session storage was added starting with v1.7       
-        if($this->config && !$this->getConfig()->getDBVersion())
-            $this->session = osTicketSession::start(SESSION_TTL); // start DB based session
-        else
+    //    if($this->config && !$this->getConfig()->getDBVersion())
+//            $this->session = session::start(SESSION_TTL); // start DB based session
+      //      $this->session = session::start(0); // start DB based session
+       // else
             session_start();
         //$this->csrf = new CSRF('__CSRFToken__');
     }

@@ -34,6 +34,6 @@
 	echo '<br />';
 
     
-    html_page_bottom();
+    //html_page_bottom();
 
     ?>

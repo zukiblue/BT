@@ -21,6 +21,9 @@ class Config {
     var $defaultSMTPEmail; //Default  SMTP Email
 
     
+    static function lookup($id) {
+        return ($id && ($cfg = new Config($id)) && $cfg->getId()==$id)?$cfg:null;
+    }
     function Config($id) { 
         $this->load($id);
     }
@@ -82,7 +85,7 @@ class Config {
 
     //Used to detect version prior to 1.7 (useful during upgrade)
     function getDBVersion() {
-        return $this->config['ostversion'];
+       // return $this->config['version'];
     }
 
     function getSchemaSignature() {
@@ -877,9 +880,5 @@ class Config {
 
     }
 
-    /** static **/
-    function lookup($id) {
-        return ($id && ($cfg = new Config($id)) && $cfg->getId()==$id)?$cfg:null;
-    }
 }
 ?>
