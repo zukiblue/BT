@@ -14,11 +14,12 @@ $g_cache_current_user_id = null;
  * @access public
  */
 function auth_is_user_authenticated() {
-  
+  return true;
 	global $g_cache_cookie_valid, $g_login_anonymous;
 	if( $g_cache_cookie_valid == true ) {
 		return $g_cache_cookie_valid;
 	}
+
         $g_cache_cookie_valid = auth_is_cookie_valid( auth_get_current_user_cookie( $g_login_anonymous ) );
        // $g_cache_cookie_valid = true;
         
@@ -35,11 +36,11 @@ function auth_is_user_authenticated() {
 function auth_is_cookie_valid( $p_cookie_string ) {
 	global $g_cache_current_user_id;
 
-	# fail if DB isn't accessible
+        # fail if DB isn't accessible
 	if( !db_is_connected() ) {
-		return false;
+	  return false;
 	}
-
+	
 	# fail if cookie is blank
 	if( '' === $p_cookie_string ) {
 		return false;
@@ -49,13 +50,13 @@ function auth_is_cookie_valid( $p_cookie_string ) {
 	if( null !== $g_cache_current_user_id ) {
 		return true;
 	}
-
+                    
 	if( user_search_cache( 'cookie_string', $p_cookie_string ) ) {
 		return true;
 	}
 
 	# look up cookie in the database to see if it is valid
-	$t_user_table = db_get_table( 'mantis_user_table' );
+	$t_user_table = db_get_table( 'users' );
 
 	$query = "SELECT *
 				  FROM $t_user_table
@@ -94,18 +95,19 @@ function auth_get_current_user_cookie( $p_login_anonymous=true ) {
 	}
 
 	# fetch user cookie
-	$t_cookie_name = config_get( 'string_cookie' );
-	$t_cookie = gpc_get_cookie( $t_cookie_name, '' );
+	$t_cookie_name = getvar( 'string_cookie' );
+//	$t_cookie = gpc_get_cookie( $t_cookie_name, '' );
+        $t_cookie = '';
 
 	# if cookie not found, and anonymous login enabled, use cookie of anonymous account.
 	if( is_blank( $t_cookie ) ) {
-		if( $p_login_anonymous && ON == config_get( 'allow_anonymous_login' ) ) {
+		if( $p_login_anonymous && ON == getvar( 'allow_anonymous_login' ) ) {
 			if( $g_cache_anonymous_user_cookie_string === null ) {
 				if( function_exists( 'db_is_connected' ) && db_is_connected() ) {
 
 					# get anonymous information if database is available
 					$query = 'SELECT id, cookie_string FROM ' . db_get_table( 'users' ) . ' WHERE username = ' . db_param();
-					$result = db_query_bound( $query, Array( config_get( 'anonymous_account' ) ) );
+					$result = db_query_bound( $query, Array( getvar( 'anonymous_account' ) ) );
 
 					if( 1 == db_num_rows( $result ) ) {
 						$row = db_fetch_array( $result );

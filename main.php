@@ -1,13 +1,12 @@
 <?php
-
+    
     require_once( 'core.php' );
-    require_once( 'current_user_api.php' );
-	
+    	
    // access_ensure_project_level( VIEWER );
-
     
-    html_page_top( lang_get( 'main_title' ) );
-    
+    //html_page_top( 'ssssssssss' );
+    //html_page_top( lang_get( 'main_title' ) );
+    html_begin(getlang( 'main_title' ));
     
    /* if ( !current_user_is_anonymous() ) {
 		$t_current_user_id = auth_get_current_user_id();
@@ -28,12 +27,11 @@
 		echo '</div>';
 	}
      else*/
-        echo 'anonymous';
-
+	echo '<br />';
+        echo 'Here the code';
 	echo '<br />';
 	echo '<br />';
 
     
-    //html_page_bottom();
-
-    ?>
+    html_end();
+?>

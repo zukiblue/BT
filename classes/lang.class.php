@@ -8,56 +8,18 @@ $languagestrings = array();
 # To be used in custom_strings_inc.php :
 $active_language = '';
 
+
 // Loads the specified language and stores it in $g_lang_strings, to be used by lang_get
 function lang_load( $language ) {
-        global $languagestrings, $active_language;
+    global $languagestrings, $active_language, $langclass;
 
-	$active_language = $language;
-	if( isset( $languagestrings[$language] ) ) {
-		return;
-	}
-/*
-	if( !lang_language_exists( $language ) ) {
-		return;
-	}
-*/
-	/*
-        $t_lang_dir = $p_dir;
-
-	if( is_null( $t_lang_dir ) ) {
-		$t_lang_dir = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-                require_once( $t_lang_dir . 'strings_' . $p_lang . '.txt' );
-	} else {
-		if( is_file( $t_lang_dir . 'strings_' . $p_lang . '.txt' ) ) {
-			include_once( $t_lang_dir . 'strings_' . $p_lang . '.txt' );
-		}
-	}
-        */
-	$lang_dir = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-        require_once( $lang_dir . 'strings_' . $language . '.txt' );
-
-	$t_vars = get_defined_vars();
-	foreach( array_keys( $t_vars ) as $t_var ) {
-		$t_lang_var = preg_replace( '/^s_/', '', $t_var );
-//CHANGE - 
-                $g_lang_strings[$language][$t_lang_var] = $$t_var;
-	   //   echo $language.'-'.$t_lang_var.'-'.$$t_var.',   ';
-		
-                if( $t_lang_var != $t_var ) {
-			$g_lang_strings[$p_lang][$t_lang_var] = $$t_var;
-		}
-		else if( 'MANTIS_ERROR' == $t_var ) {
-			if( isset( $g_lang_strings[$p_lang][$t_lang_var] ) ) {
-				foreach( $$t_var as $key => $val ) {
-					$g_lang_strings[$p_lang][$t_lang_var][$key] = $val;
-				}
-			} else {
-				$g_lang_strings[$p_lang][$t_lang_var] = $$t_var;
-			}
-		}
-	}
-//die(var_dump($languagestrings));
-        
+    $active_language = $language;
+    if( isset( $languagestrings[$language] ) ) {
+            return;
+    }
+    
+    $languagestrings[$language] = getlangvarsfromfile($language);
+       // die(var_dump($languagestrings[$language]));
 }
 
 function lang_ensure_loaded( $language ) {
@@ -68,6 +30,12 @@ function lang_ensure_loaded( $language ) {
 	}
 }
 
+function getlangvarsfromfile ($language) {
+    $lang_dir = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
+    require_once( $lang_dir . 'strings_' . $language . '.txt' );
+    unset ($lang_dir, $language);
+    return compact(array_keys(get_defined_vars()));        
+}
 
 /**
  * Determine the preferred language
@@ -75,10 +43,9 @@ function lang_ensure_loaded( $language ) {
  */
 function lang_get_default() {
 	global $active_language;
-
 	$t_lang = false;
 
-	# Confirm that the user's language can be determined
+        # Confirm that the user's language can be determined
 	if( function_exists( 'auth_is_user_authenticated' ) && auth_is_user_authenticated() ) {
 	  //$t_lang = user_pref_get_language( auth_get_current_user_id() );
           $t_lang = 'english';	  
@@ -112,9 +79,9 @@ function lang_get_current() {
  * @param string $p_lang
  * @return bool
  */
-function lang_exists( $p_string, $p_lang ) {
-	global $languagestrings;
-      	return( isset( $$languagestrings[$p_lang] ) && isset( $$languagestrings[$p_lang][$p_string] ) );
+function lang_exists( $key, $language ) {
+	global $languagestrings;         
+      	return( isset( $languagestrings[$language] ) && isset( $languagestrings[$language][$key] ) );
 }
 
 /**
@@ -123,16 +90,15 @@ function lang_exists( $p_string, $p_lang ) {
  *  1. The string in the current user's preferred language (if defined)
  *  2. The string in English
  */
-function lang_get( $key, $language = null ) {
-    return $key;
+function getlang( $key, $language = null ) {
+    //return $key;
 	global $languagestrings;
 # $P_string » key
 	# If no specific language is requested, we'll
 	#  try to determine the language from the users
 	#  preferences
 
-	$_lang = $language;
-
+        $_lang = $language;
 	if( null === $_lang ) {
 		$_lang = lang_get_current();
 	}
@@ -161,7 +127,7 @@ function lang_get( $key, $language = null ) {
 		}
 	}
 }
-
+/*
 
 class lang {
     static function init() {
@@ -174,8 +140,14 @@ class lang {
     function lang() {
         //
     }
-
     
-}
+    function getlangvarsfromfile ($language) {
+      	$lang_dir = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
+        require_once( $lang_dir . 'strings_' . $language . '.txt' );
+        unset ($lang_dir, $language);
+        return compact(array_keys(get_defined_vars()));        
+    }
 
+}
+*/
 ?>

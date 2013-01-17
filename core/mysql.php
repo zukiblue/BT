@@ -29,6 +29,7 @@
         //Select the database, if any.
         if($db) db_select_database($db);
 
+
         //set desired encoding just in case mysql charset is not UTF-8 - Thanks to FreshMedia
         @mysql_query('SET NAMES "utf8"');
         @mysql_query('SET CHARACTER SET "utf8"');

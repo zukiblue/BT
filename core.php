@@ -61,7 +61,7 @@ if ( ($output = ob_get_contents()) != '') {
 	die;
 }
 
-#require_once( 'utility_api.php' );
+require_once( 'utils.php' );
 #require_once( 'compress_api.php' );
 #compress_start_handler();
 
@@ -141,7 +141,7 @@ if( !($auth=auth::init()) ) {
 
 # Display API's
 require_once( 'http_api.php' );
-require_once( 'html_api.php' );
+require_once( 'html.inc.php' );
 #require_once( 'gpc_api.php' );
 #require_once( 'form_api.php' );
 #require_once( 'print_api.php' );
@@ -158,9 +158,9 @@ if ( !isset( $g_login_anonymous ) ) {
 if ( !isset( $g_skip_lang_load ) ) {
 #	lang_push( lang_get_default() );
 //    lang_load( lang_get_default() );
-    lang_load( 'english' );
+   lang_load( 'english' );   
 }
-
+	
 # signal plugins that the core system is loaded
 #event_signal( 'EVENT_CORE_READY' );
 

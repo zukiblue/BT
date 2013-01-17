@@ -112,7 +112,7 @@ function html_page_top( $p_page_title = null, $p_redirect_url = null ) {
 			echo '<br />';
 		}
 	}
-*/	print_menu();
+*///	print_menu();
 
 #	event_signal( 'EVENT_LAYOUT_CONTENT_BEGIN' );
 }
